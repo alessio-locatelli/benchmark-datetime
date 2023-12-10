@@ -9,6 +9,14 @@ extend-exclude = [
     "resources",
     "pdoc",
 ]
+ignore = [
+    # Missing docstring in [...] 
+    "D1",
+    # `one-blank-line-before-class` (D203)
+    "D203",
+    # `multi-line-summary-second-line` (D213)
+    "D213"
+]
 select = [
     # Pyflakes
     "F",
@@ -37,8 +45,6 @@ select = [
     "A",
     # flake8-commas
     "COM",
-    # flake8-copyright
-    "CPY",
     # flake8-comprehensions
     "C4",
     # flake8-datetimez
