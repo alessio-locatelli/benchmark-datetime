@@ -54,4 +54,13 @@ repos:
     hooks:
       - id: mypy
         args: [--strict]
-        additional_dependencies: [pendulum]
+        additional_dependencies:
+          [
+            pendulum,
+            pydantic,
+            python-dateutil,
+            arrow,
+            udatetime,
+            pytest,
+            pytest-benchmark,
+          ]
