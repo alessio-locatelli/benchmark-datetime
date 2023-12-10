@@ -63,4 +63,5 @@ repos:
             udatetime,
             pytest,
             pytest-benchmark,
+            faker,
           ]
