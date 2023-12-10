@@ -9,6 +9,7 @@ import pydantic
 import pytest
 import udatetime  # type: ignore[import-untyped]
 from dateutil import tz
+from dateutil.relativedelta import relativedelta
 from faker import Faker
 from pydantic import TypeAdapter
 
@@ -20,7 +21,7 @@ libraries_now_utc = {
     "pendulum": pendulum.now,
     "python": partial(datetime.datetime.now, datetime.UTC),
     "udatetime": udatetime.utcnow,
-    # "pydantic": ... # Not supported.
+    # "pydantic": ... # Not relevant.
 }
 
 
@@ -31,11 +32,11 @@ def test_now_utc(benchmark: Callable[..., Any], library: str) -> None:
 
 libraries_now = {
     "arrow": arrow.now,
-    "dateutil": datetime.datetime.now,
+    # "dateutil": ..., # Not relevant.
     # "pendulum": ...,  # Not supported.
     "python": datetime.datetime.now,
     "udatetime": udatetime.now,
-    # "pydantic": ... # Not supported.
+    # "pydantic": ... # Not relevant.
 }
 
 
@@ -75,3 +76,62 @@ def test_parse_utc_from_iso_8601(benchmark: Callable[..., Any], library: str) ->
         libraries_parse_utc_from_iso_8601[library],
         fake.iso8601(tzinfo=datetime.UTC),
     )
+
+
+timedelta_kwargs = dict(
+    days=+fake.pyint(min_value=400, max_value=500),
+    hours=+fake.pyint(min_value=400, max_value=500),
+    minutes=+fake.pyint(min_value=400, max_value=500),
+    microseconds=+fake.pyint(min_value=400, max_value=500),
+)
+libraries_shift_forward = {
+    "arrow": (lambda dt: dt.shift(**timedelta_kwargs), arrow.utcnow()),
+    "dateutil": (
+        lambda dt: dt + relativedelta(**timedelta_kwargs),
+        datetime.datetime.now(tz.UTC),
+    ),
+    "pendulum": (lambda dt: dt.add(**timedelta_kwargs), pendulum.now()),
+    "python": (
+        lambda dt: dt + datetime.timedelta(**timedelta_kwargs),
+        datetime.datetime.now(datetime.UTC),
+    ),
+    # "udatetime": ...,  # Not relevant.
+    # "pydantic": ...,  # Not relevant.
+}
+
+
+@pytest.mark.parametrize("library", libraries_shift_forward)
+def test_add_timedelta(benchmark: Callable[..., Any], library: str) -> None:
+    func, arg = libraries_shift_forward[library][0], libraries_shift_forward[library][1]
+    benchmark(func, arg)
+
+
+timedelta_kwargs_negative = dict(
+    days=-fake.pyint(min_value=400, max_value=500),
+    hours=-fake.pyint(min_value=400, max_value=500),
+    minutes=-fake.pyint(min_value=400, max_value=500),
+    microseconds=-fake.pyint(min_value=400, max_value=500),
+)
+libraries_shift_backward = {
+    "arrow": (lambda dt: dt.shift(**timedelta_kwargs_negative), arrow.utcnow()),
+    "dateutil": (
+        lambda dt: dt + relativedelta(**timedelta_kwargs_negative),
+        datetime.datetime.now(tz.UTC),
+    ),
+    "pendulum": (lambda dt: dt.add(**timedelta_kwargs_negative), pendulum.now()),
+    "python": (
+        lambda dt: dt + datetime.timedelta(**timedelta_kwargs_negative),
+        datetime.datetime.now(datetime.UTC),
+    ),
+    # "udatetime": ...,  # Not relevant.
+    # "pydantic": ...,  # Not relevant.
+}
+
+
+@pytest.mark.parametrize("library", libraries_shift_backward)
+def test_substract_timedelta(benchmark: Callable[..., Any], library: str) -> None:
+    func, arg = (
+        libraries_shift_backward[library][0],
+        libraries_shift_backward[library][1],
+    )
+    benchmark(func, arg)

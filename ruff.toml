@@ -10,6 +10,8 @@ extend-exclude = [
     "pdoc",
 ]
 ignore = [
+    # C408 Unnecessary `dict` call (rewrite as a literal)
+    "C408",
     # Missing docstring in [...] 
     "D1",
     # `one-blank-line-before-class` (D203)
