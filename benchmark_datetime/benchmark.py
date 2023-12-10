@@ -78,6 +78,22 @@ def test_parse_utc_from_iso_8601(benchmark: Callable[..., Any], library: str) ->
     )
 
 
+libraries_parse_utc_from_rfc_3339 = {
+    "arrow": arrow.get,
+    # "dateutil": ...,  # Not supported.
+    "pendulum": pendulum.parse,  # type: ignore[attr-defined]
+    "python": datetime.datetime.fromisoformat,
+    "udatetime": udatetime.from_string,
+    "pydantic": TypeAdapter(pydantic.AwareDatetime).validate_python,
+}
+
+
+@pytest.mark.parametrize("library", libraries_parse_utc_from_rfc_3339)
+def test_parse_utc_from_rfc_3339(benchmark: Callable[..., Any], library: str) -> None:
+    rfc_3339_date_example = "1937-01-01T12:00:27.87+00:20"
+    benchmark(libraries_parse_utc_from_rfc_3339[library], rfc_3339_date_example)
+
+
 timedelta_kwargs = dict(
     days=+fake.pyint(min_value=400, max_value=500),
     hours=+fake.pyint(min_value=400, max_value=500),
