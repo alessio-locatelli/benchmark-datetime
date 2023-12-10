@@ -50,7 +50,7 @@ libraries_parse_utc_from_unix_timestamp = {
     "pendulum": pendulum.from_timestamp,
     "python": datetime.datetime.utcfromtimestamp,
     "udatetime": udatetime.utcfromtimestamp,
-    "pydantic": TypeAdapter[pydantic.AwareDatetime].validate_python,
+    "pydantic": TypeAdapter(pydantic.AwareDatetime).validate_python,
 }
 
 
@@ -65,7 +65,7 @@ libraries_parse_utc_from_iso_8601 = {
     "pendulum": pendulum.parse,  # type: ignore[attr-defined]
     "python": datetime.datetime.fromisoformat,
     "udatetime": udatetime.from_string,
-    "pydantic": TypeAdapter[pydantic.AwareDatetime].validate_python,
+    "pydantic": TypeAdapter(pydantic.AwareDatetime).validate_python,
 }
 
 
