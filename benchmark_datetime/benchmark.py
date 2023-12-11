@@ -78,7 +78,7 @@ def test_parse_utc_from_timestamp(benchmark: Callable[..., Any], library: str) -
 libraries_parse_utc_from_iso_8601 = {
     "arrow": arrow.get,
     # "dateutil": ...,  # Not supported.
-    "pendulum": pendulum.parse,  # type: ignore[attr-defined]
+    "pendulum": pendulum.parse,
     "python": datetime.datetime.fromisoformat,
     "udatetime": udatetime.from_string,
     "pydantic": TypeAdapter(pydantic.AwareDatetime).validate_python,
@@ -100,7 +100,7 @@ def test_parse_utc_from_iso_8601(benchmark: Callable[..., Any], library: str) ->
 libraries_parse_utc_from_rfc_3339 = {
     "arrow": arrow.get,
     # "dateutil": ...,  # Not supported.
-    "pendulum": pendulum.parse,  # type: ignore[attr-defined]
+    "pendulum": pendulum.parse,
     "python": datetime.datetime.fromisoformat,
     "udatetime": udatetime.from_string,
     "pydantic": TypeAdapter(pydantic.AwareDatetime).validate_python,
@@ -254,7 +254,7 @@ libraries_find_next_saturday = {
         lambda dt: dt + relativedelta(weekday=SA(+1)),
         datetime.datetime.now(tz.UTC),
     ),
-    "pendulum": (lambda dt: dt.next(pendulum.SATURDAY), pendulum.now(pendulum.UTC)),  # type: ignore[attr-defined]
+    "pendulum": (lambda dt: dt.next(pendulum.SATURDAY), pendulum.now(pendulum.UTC)),
     "python": (
         lambda dt: dt + datetime.timedelta((7 + SATURDAY - dt.weekday()) % 7),
         datetime.datetime.now(datetime.UTC),
