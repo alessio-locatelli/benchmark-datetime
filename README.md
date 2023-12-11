@@ -152,6 +152,6 @@ Legend:
 ![](./benchmark_histogram/benchmark_20231211_132302-test_timedelta_to_seconds.svg)
 ![](./benchmark_histogram/benchmark_20231211_132302-test_parse_utc_from_iso_8601.svg)
 ![](./benchmark_histogram/benchmark_20231211_132302-test_parse_utc_from_rfc_3339.svg)
-![](./benchmark_histogram/benchmark_20231211_132302-test_convert_dt_to_isoformat_string.svg)
+![](./benchmark_histogram/benchmark_20231211_134910-test_convert_dt_to_isoformat_string.svg)
 ![](./benchmark_histogram/benchmark_20231211_132302-test_parse_utc_from_timestamp.svg)
 ![](./benchmark_histogram/benchmark_20231211_132302-test_substract_timedelta.svg)
