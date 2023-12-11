@@ -141,3 +141,17 @@ Legend:
   Outliers: 1 Standard Deviation from Mean; 1.5 IQR (InterQuartile Range) from 1st Quartile and 3rd Quartile.
   OPS: Operations Per Second, computed as 1 / Mean
 ```
+
+## Histogram
+
+![](./benchmark_histogram/benchmark_20231211_132302-test_now_utc.svg)
+![](./benchmark_histogram/benchmark_20231211_132302-test_now_local.svg)
+![](./benchmark_histogram/benchmark_20231211_132302-test_isoweekday.svg)
+![](./benchmark_histogram/benchmark_20231211_132302-test_add_timedelta.svg)
+![](./benchmark_histogram/benchmark_20231211_132302-test_find_next_saturday.svg)
+![](./benchmark_histogram/benchmark_20231211_132302-test_timedelta_to_seconds.svg)
+![](./benchmark_histogram/benchmark_20231211_132302-test_parse_utc_from_iso_8601.svg)
+![](./benchmark_histogram/benchmark_20231211_132302-test_parse_utc_from_rfc_3339.svg)
+![](./benchmark_histogram/benchmark_20231211_132302-test_convert_dt_to_isoformat_string.svg)
+![](./benchmark_histogram/benchmark_20231211_132302-test_parse_utc_from_timestamp.svg)
+![](./benchmark_histogram/benchmark_20231211_132302-test_substract_timedelta.svg)
