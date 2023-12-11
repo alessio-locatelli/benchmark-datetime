@@ -53,7 +53,7 @@ repos:
     rev: "v1.7.1"
     hooks:
       - id: mypy
-        args: [--strict]
+        args: [--config=mypy.ini]
         additional_dependencies:
           [
             pendulum,

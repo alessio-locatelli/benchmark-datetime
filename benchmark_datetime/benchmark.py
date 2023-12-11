@@ -18,7 +18,7 @@ fake = Faker()
 libraries_now_utc = {
     "arrow": arrow.utcnow,
     "dateutil": partial(datetime.datetime.now, tz.UTC),
-    "pendulum": pendulum.now,
+    "pendulum": partial(pendulum.now, pendulum.UTC),
     "python": partial(datetime.datetime.now, datetime.UTC),
     "udatetime": udatetime.utcnow,
     # "pydantic": ... # Not relevant.
@@ -29,28 +29,28 @@ libraries_now_utc = {
 def test_now_utc(benchmark: Callable[..., Any], library: str) -> None:
     # Functions from different libraries give the same result.
     datetimes = [func() for func in libraries_now_utc.values()]
-    assert len({dt.day for dt in datetimes}) == 1
+    assert len({dt.hour for dt in datetimes}) == 1
 
     benchmark(libraries_now_utc[library])
 
 
-libraries_now = {
+libraries_now_local = {
     "arrow": arrow.now,
     # "dateutil": ..., # Not relevant.
-    # "pendulum": ...,  # Not supported.
+    "pendulum": pendulum.now,
     "python": datetime.datetime.now,
     "udatetime": udatetime.now,
     # "pydantic": ... # Not relevant.
 }
 
 
-@pytest.mark.parametrize("library", libraries_now)
-def test_now(benchmark: Callable[..., Any], library: str) -> None:
+@pytest.mark.parametrize("library", libraries_now_local)
+def test_now_local(benchmark: Callable[..., Any], library: str) -> None:
     # Functions from different libraries give the same result.
-    datetimes = [func() for func in libraries_now.values()]
-    assert len({dt.day for dt in datetimes}) == 1
+    datetimes = [func() for func in libraries_now_local.values()]
+    assert len({dt.hour for dt in datetimes}) == 1
 
-    benchmark(libraries_now[library])
+    benchmark(libraries_now_local[library])
 
 
 libraries_parse_utc_from_unix_timestamp = {
@@ -144,7 +144,7 @@ libraries_shift_forward = {
         lambda dt: dt + relativedelta(**timedelta_kwargs),
         datetime.datetime.now(tz.UTC),
     ),
-    "pendulum": (lambda dt: dt.add(**timedelta_kwargs), pendulum.now()),
+    "pendulum": (lambda dt: dt.add(**timedelta_kwargs), pendulum.now(pendulum.UTC)),
     "python": (
         lambda dt: dt + datetime.timedelta(**timedelta_kwargs),
         datetime.datetime.now(datetime.UTC),
@@ -158,7 +158,7 @@ libraries_shift_forward = {
 def test_add_timedelta(benchmark: Callable[..., Any], library: str) -> None:
     # Functions from different libraries give the same result.
     datetimes = [func(arg) for func, arg in libraries_shift_forward.values()]
-    assert len({dt.day for dt in datetimes}) == 1
+    assert len({dt.day for dt in datetimes}) == 1, datetimes
 
     func, arg = libraries_shift_forward[library][0], libraries_shift_forward[library][1]
     benchmark(func, arg)
@@ -176,7 +176,10 @@ libraries_shift_backward = {
         lambda dt: dt + relativedelta(**timedelta_kwargs_negative),
         datetime.datetime.now(tz.UTC),
     ),
-    "pendulum": (lambda dt: dt.add(**timedelta_kwargs_negative), pendulum.now()),
+    "pendulum": (
+        lambda dt: dt.add(**timedelta_kwargs_negative),
+        pendulum.now(pendulum.UTC),
+    ),
     "python": (
         lambda dt: dt + datetime.timedelta(**timedelta_kwargs_negative),
         datetime.datetime.now(datetime.UTC),
@@ -189,8 +192,10 @@ libraries_shift_backward = {
 @pytest.mark.parametrize("library", libraries_shift_backward)
 def test_substract_timedelta(benchmark: Callable[..., Any], library: str) -> None:
     # Functions from different libraries give the same result.
-    datetimes = [func(arg) for func, arg in libraries_shift_forward.values()]
-    assert len({dt.day for dt in datetimes}) == 1
+    providers_datetimes = {k: v[0](v[1]) for k, v in libraries_shift_forward.items()}
+    assert (
+        len({dt.day for dt in providers_datetimes.values()}) == 1
+    ), providers_datetimes
 
     func, arg = (
         libraries_shift_backward[library][0],
@@ -226,7 +231,7 @@ def test_timedelta_to_seconds(benchmark: Callable[..., Any], library: str) -> No
 libraries_isoweekday = {
     "arrow": (lambda dt: dt.isoweekday(), arrow.utcnow()),
     # "dateutil": ...,  # Not supported.
-    "pendulum": (lambda td: td.day_of_week, pendulum.now()),
+    "pendulum": (lambda td: td.day_of_week, pendulum.now(pendulum.UTC)),
     "python": (lambda td: td.isoweekday(), datetime.datetime.now(datetime.UTC)),
     "udatetime": (lambda td: td.isoweekday(), udatetime.utcnow()),
     # "pydantic": ...,  # Not relevant.
@@ -249,7 +254,7 @@ libraries_find_next_saturday = {
         lambda dt: dt + relativedelta(weekday=SA(+1)),
         datetime.datetime.now(tz.UTC),
     ),
-    "pendulum": (lambda dt: dt.next(pendulum.SATURDAY), pendulum.now()),  # type: ignore[attr-defined]
+    "pendulum": (lambda dt: dt.next(pendulum.SATURDAY), pendulum.now(pendulum.UTC)),  # type: ignore[attr-defined]
     "python": (
         lambda dt: dt + datetime.timedelta((7 + SATURDAY - dt.weekday()) % 7),
         datetime.datetime.now(datetime.UTC),
@@ -275,7 +280,7 @@ def test_find_next_saturday(benchmark: Callable[..., Any], library: str) -> None
 libraries_convert_dt_to_isoformat_string = {
     "arrow": (lambda dt: dt.isoformat(), arrow.utcnow()),
     # "dateutil": ...,  # Not relevant.
-    "pendulum": (lambda dt: dt.isoformat(), pendulum.now()),
+    "pendulum": (lambda dt: dt.isoformat(), pendulum.now(pendulum.UTC)),
     "python": (lambda dt: dt.isoformat(), datetime.datetime.now(datetime.UTC)),
     "udatetime": (udatetime.to_string, udatetime.utcnow()),
     # "pydantic": ...,  # Not relevant.
