@@ -6,7 +6,7 @@ Compare:
 - [arrow](https://github.com/arrow-py/arrow/)
 - [pendulum](https://github.com/sdispater/pendulum)
 - [udatetime](https://github.com/freach/udatetime)
-- Python built-in [`datetime`](https://docs.python.org/3/library/datetime.html)
+- Python [`datetime`](https://docs.python.org/3/library/datetime.html)
 - [pydantic](https://github.com/pydantic/pydantic)
 
 ## How to setup
