@@ -9,7 +9,7 @@ import pydantic
 import pytest
 import udatetime  # type: ignore[import-untyped]
 from dateutil import tz
-from dateutil.relativedelta import relativedelta
+from dateutil.relativedelta import SA, relativedelta
 from faker import Faker
 from pydantic import TypeAdapter
 
@@ -27,6 +27,10 @@ libraries_now_utc = {
 
 @pytest.mark.parametrize("library", libraries_now_utc)
 def test_now_utc(benchmark: Callable[..., Any], library: str) -> None:
+    # Functions from different libraries give the same result.
+    datetimes = [func() for func in libraries_now_utc.values()]
+    assert len({dt.day for dt in datetimes}) == 1
+
     benchmark(libraries_now_utc[library])
 
 
@@ -42,6 +46,10 @@ libraries_now = {
 
 @pytest.mark.parametrize("library", libraries_now)
 def test_now(benchmark: Callable[..., Any], library: str) -> None:
+    # Functions from different libraries give the same result.
+    datetimes = [func() for func in libraries_now.values()]
+    assert len({dt.day for dt in datetimes}) == 1
+
     benchmark(libraries_now[library])
 
 
@@ -57,7 +65,14 @@ libraries_parse_utc_from_unix_timestamp = {
 
 @pytest.mark.parametrize("library", libraries_parse_utc_from_unix_timestamp)
 def test_parse_utc_from_timestamp(benchmark: Callable[..., Any], library: str) -> None:
-    benchmark(libraries_parse_utc_from_unix_timestamp[library], fake.unix_time())
+    # Functions from different libraries give the same result.
+    unix_time = fake.unix_time()
+    datetimes = [
+        func(unix_time) for func in libraries_parse_utc_from_unix_timestamp.values()
+    ]
+    assert len({dt.day for dt in datetimes}) == 1
+
+    benchmark(libraries_parse_utc_from_unix_timestamp[library], unix_time)
 
 
 libraries_parse_utc_from_iso_8601 = {
@@ -72,10 +87,14 @@ libraries_parse_utc_from_iso_8601 = {
 
 @pytest.mark.parametrize("library", libraries_parse_utc_from_iso_8601)
 def test_parse_utc_from_iso_8601(benchmark: Callable[..., Any], library: str) -> None:
-    benchmark(
-        libraries_parse_utc_from_iso_8601[library],
-        fake.iso8601(tzinfo=datetime.UTC),
-    )
+    # Functions from different libraries give the same result.
+    fake_iso8601 = fake.iso8601(tzinfo=datetime.UTC)
+    datetimes = [
+        func(fake_iso8601) for func in libraries_parse_utc_from_iso_8601.values()
+    ]
+    assert len({dt.day for dt in datetimes}) == 1
+
+    benchmark(libraries_parse_utc_from_iso_8601[library], fake_iso8601)
 
 
 libraries_parse_utc_from_rfc_3339 = {
@@ -90,8 +109,27 @@ libraries_parse_utc_from_rfc_3339 = {
 
 @pytest.mark.parametrize("library", libraries_parse_utc_from_rfc_3339)
 def test_parse_utc_from_rfc_3339(benchmark: Callable[..., Any], library: str) -> None:
-    rfc_3339_date_example = "1937-01-01T12:00:27.87+00:20"
-    benchmark(libraries_parse_utc_from_rfc_3339[library], rfc_3339_date_example)
+    # Functions from different libraries give the same result.
+    datetimes = [
+        func("1996-12-19T16:39:57-08:00")
+        for func in libraries_parse_utc_from_rfc_3339.values()
+    ]
+    assert len({dt.day for dt in datetimes}) == 1
+
+    func = libraries_parse_utc_from_rfc_3339[library]
+
+    def parse() -> None:
+        for rfc_3339_datetime in [
+            # Examples are taken from https://datatracker.ietf.org/doc/html/rfc3339.
+            "1985-04-12T23:20:50.52Z",
+            "1996-12-19T16:39:57-08:00",
+            # "1990-12-31T23:59:60Z",  # Can not be parsed out of the box.
+            # "1990-12-31T15:59:60-08:00",  # Can not be parsed out of the box.
+            "1937-01-01T12:00:27.87+00:20",
+        ]:
+            func(rfc_3339_datetime)
+
+    benchmark(parse)
 
 
 timedelta_kwargs = dict(
@@ -118,6 +156,10 @@ libraries_shift_forward = {
 
 @pytest.mark.parametrize("library", libraries_shift_forward)
 def test_add_timedelta(benchmark: Callable[..., Any], library: str) -> None:
+    # Functions from different libraries give the same result.
+    datetimes = [func(arg) for func, arg in libraries_shift_forward.values()]
+    assert len({dt.day for dt in datetimes}) == 1
+
     func, arg = libraries_shift_forward[library][0], libraries_shift_forward[library][1]
     benchmark(func, arg)
 
@@ -146,8 +188,113 @@ libraries_shift_backward = {
 
 @pytest.mark.parametrize("library", libraries_shift_backward)
 def test_substract_timedelta(benchmark: Callable[..., Any], library: str) -> None:
+    # Functions from different libraries give the same result.
+    datetimes = [func(arg) for func, arg in libraries_shift_forward.values()]
+    assert len({dt.day for dt in datetimes}) == 1
+
     func, arg = (
         libraries_shift_backward[library][0],
         libraries_shift_backward[library][1],
+    )
+    benchmark(func, arg)
+
+
+libraries_timedelta_to_seconds = {
+    # "arrow": ...,  # Not relevant.
+    # "dateutil": ...,  # Not relevant.
+    "pendulum": (lambda td: td.total_seconds(), pendulum.duration(**timedelta_kwargs)),
+    "python": (lambda td: td.total_seconds(), datetime.timedelta(**timedelta_kwargs)),
+    # "udatetime": ...,  # Not relevant.
+    # "pydantic": ...,  # Not relevant.
+}
+
+
+@pytest.mark.parametrize("library", libraries_timedelta_to_seconds)
+def test_timedelta_to_seconds(benchmark: Callable[..., Any], library: str) -> None:
+    # Functions from different libraries give the same result.
+    assert (
+        len({func(arg) for func, arg in libraries_timedelta_to_seconds.values()}) == 1
+    )
+
+    func, arg = (
+        libraries_timedelta_to_seconds[library][0],
+        libraries_timedelta_to_seconds[library][1],
+    )
+    benchmark(func, arg)
+
+
+libraries_isoweekday = {
+    "arrow": (lambda dt: dt.isoweekday(), arrow.utcnow()),
+    # "dateutil": ...,  # Not supported.
+    "pendulum": (lambda td: td.day_of_week, pendulum.now()),
+    "python": (lambda td: td.isoweekday(), datetime.datetime.now(datetime.UTC)),
+    "udatetime": (lambda td: td.isoweekday(), udatetime.utcnow()),
+    # "pydantic": ...,  # Not relevant.
+}
+
+
+@pytest.mark.parametrize("library", libraries_isoweekday)
+def test_isoweekday(benchmark: Callable[..., Any], library: str) -> None:
+    # Functions from different libraries give the same result.
+    assert len({func(arg) for func, arg in libraries_isoweekday.values()}) == 1
+
+    func, arg = (libraries_isoweekday[library][0], libraries_isoweekday[library][1])
+    benchmark(func, arg)
+
+
+SATURDAY = 5
+libraries_find_next_saturday = {
+    "arrow": (lambda dt: dt.shift(weekday=SATURDAY), arrow.utcnow()),
+    "dateutil": (
+        lambda dt: dt + relativedelta(weekday=SA(+1)),
+        datetime.datetime.now(tz.UTC),
+    ),
+    "pendulum": (lambda dt: dt.next(pendulum.SATURDAY), pendulum.now()),  # type: ignore[attr-defined]
+    "python": (
+        lambda dt: dt + datetime.timedelta((7 + SATURDAY - dt.weekday()) % 7),
+        datetime.datetime.now(datetime.UTC),
+    ),
+    # "udatetime": ..., # Not relevant
+    # "pydantic": ...,  # Not relevant.
+}
+
+
+@pytest.mark.parametrize("library", libraries_find_next_saturday)
+def test_find_next_saturday(benchmark: Callable[..., Any], library: str) -> None:
+    # Functions from different libraries give the same result.
+    datetimes = [func(arg) for func, arg in libraries_find_next_saturday.values()]
+    assert len({dt.day for dt in datetimes}) == 1
+
+    func, arg = (
+        libraries_find_next_saturday[library][0],
+        libraries_find_next_saturday[library][1],
+    )
+    benchmark(func, arg)
+
+
+libraries_convert_dt_to_isoformat_string = {
+    "arrow": (lambda dt: dt.isoformat(), arrow.utcnow()),
+    # "dateutil": ...,  # Not relevant.
+    "pendulum": (lambda dt: dt.isoformat(), pendulum.now()),
+    "python": (lambda dt: dt.isoformat(), datetime.datetime.now(datetime.UTC)),
+    "udatetime": (udatetime.to_string, udatetime.utcnow()),
+    # "pydantic": ...,  # Not relevant.
+}
+
+
+@pytest.mark.parametrize("library", libraries_convert_dt_to_isoformat_string)
+def test_convert_dt_to_isoformat_string(
+    benchmark: Callable[..., Any],
+    library: str,
+) -> None:
+    # Functions from different libraries give the same result.
+    iso_strings = [
+        func(arg) for func, arg in libraries_convert_dt_to_isoformat_string.values()
+    ]
+    assert len({len(s) for s in iso_strings}) == 1, {s: len(s) for s in iso_strings}
+
+    func, arg = (
+        libraries_convert_dt_to_isoformat_string[library][0],
+        libraries_convert_dt_to_isoformat_string[library][1],
     )
     benchmark(func, arg)

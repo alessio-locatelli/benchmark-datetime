@@ -17,7 +17,9 @@ ignore = [
     # `one-blank-line-before-class` (D203)
     "D203",
     # `multi-line-summary-second-line` (D213)
-    "D213"
+    "D213",
+    # assert (S101)
+    "S101"
 ]
 select = [
     # Pyflakes

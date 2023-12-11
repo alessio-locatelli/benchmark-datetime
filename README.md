@@ -1,5 +1,14 @@
 # benchmark-datetime
 
+Compare:
+
+- [python-dateutil](https://github.com/dateutil/dateutil)
+- [arrow](https://github.com/arrow-py/arrow/)
+- [pendulum](https://github.com/sdispater/pendulum)
+- [udatetime](https://github.com/freach/udatetime)
+- Python built-in [`datetime`](https://docs.python.org/3/library/datetime.html)
+- [pydantic](https://github.com/pydantic/pydantic)
+
 ## How to setup
 
 1. Install [Poetry](https://python-poetry.org/).
@@ -13,6 +22,13 @@ Read the documentation for specific packages if the installation fails.
 ```sh
 pytest benchmark_datetime/benchmark.py --benchmark-group-by=func
 ```
+
+## Results summary
+
+If performance is important:
+
+- Use Python `datetime` module for manipulating dates and times.
+- Use Python `datetime` module, `udatetime`, `Pydantic` for parsing.
 
 ## Results
 
