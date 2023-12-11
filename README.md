@@ -30,7 +30,7 @@ If performance is important:
 - Use Python `datetime` module for manipulating dates and times.
 - Use Python `datetime` module, `udatetime` or `Pydantic` for parsing.
 
-`pendulum` and `arrow` can be many times slower. Use third-party packages if you need additional functionality for manipulating dates, and a possible performance overhead can be ignored, and you are not going to implement these helper functions with a standard library.
+`pendulum` and `arrow` can be several times slower. Use third-party packages if you need additional functionality for manipulating dates, and a possible performance overhead can be ignored, and you are not going to implement these helper functions with a standard library.
 
 ## Results
 
