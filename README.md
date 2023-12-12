@@ -2,12 +2,12 @@
 
 Compare:
 
-- [python-dateutil](https://github.com/dateutil/dateutil)
-- [arrow](https://github.com/arrow-py/arrow/)
-- [pendulum](https://github.com/sdispater/pendulum)
-- [udatetime](https://github.com/freach/udatetime)
-- Python [`datetime`](https://docs.python.org/3/library/datetime.html)
-- [pydantic](https://github.com/pydantic/pydantic)
+- Python 3.11.6 [`datetime`](https://docs.python.org/3/library/datetime.html)
+- [python-dateutil](https://github.com/dateutil/dateutil) 2.8.2
+- [arrow](https://github.com/arrow-py/arrow/) 1.3.0
+- [pendulum](https://github.com/sdispater/pendulum) 2.1.2
+- [udatetime](https://github.com/freach/udatetime) 0.0.17
+- [pydantic](https://github.com/pydantic/pydantic) 2.5.2
 
 ## How to setup
 
