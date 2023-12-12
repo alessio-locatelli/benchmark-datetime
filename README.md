@@ -17,6 +17,8 @@ Compare:
 Some packages (for example, `udatetime`) may require additional dependencies for building from source.
 Read the documentation for specific packages if the installation fails.
 
+Suggestions and contributions are welcome.
+
 ## How to run
 
 ```sh
