@@ -7,7 +7,14 @@ Compare:
 - [arrow](https://github.com/arrow-py/arrow/) 1.3.0
 - [pendulum](https://github.com/sdispater/pendulum) 2.1.2
 - [udatetime](https://github.com/freach/udatetime) 0.0.17
-- [pydantic](https://github.com/pydantic/pydantic) 2.5.2
+- [pydantic](https://github.com/pydantic/pydantic) 2.5.2 (used only in benchmarks where we parse an argument to a `datetime` object)
+- [pandas](https://pandas.pydata.org/) 2.1.4 (used only in benchmarks where we parse an argument)
+
+There are three types of benchmarks or three types of actions you can do in your code:
+
+- Manipulating datetime, date, duration objects.
+- Parsing (for example, converting a string to an object).
+- Dumping (for example, converting an object to a string).
 
 ## How to setup
 
