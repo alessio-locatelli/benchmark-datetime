@@ -64,4 +64,6 @@ repos:
             pytest,
             pytest-benchmark,
             faker,
+            pandas,
+            pandas-stubs,
           ]

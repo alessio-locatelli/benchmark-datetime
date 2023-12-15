@@ -4,6 +4,8 @@ from functools import partial
 from typing import Any
 
 import arrow
+import dateutil
+import pandas as pd
 import pendulum
 import pydantic
 import pytest
@@ -77,7 +79,7 @@ def test_parse_utc_from_timestamp(benchmark: Callable[..., Any], library: str) -
 
 libraries_parse_utc_from_iso_8601 = {
     "arrow": arrow.get,
-    # "dateutil": ...,  # Not supported.
+    "dateutil": dateutil.parser.isoparse,
     "pendulum": pendulum.parse,
     "python": datetime.datetime.fromisoformat,
     "udatetime": udatetime.from_string,
@@ -95,6 +97,37 @@ def test_parse_utc_from_iso_8601(benchmark: Callable[..., Any], library: str) ->
     assert len({dt.day for dt in datetimes}) == 1
 
     benchmark(libraries_parse_utc_from_iso_8601[library], fake_iso8601)
+
+
+libraries_parse_utc_from_iso_8601_duration = {
+    # "arrow": ...,  # Not supported (https://github.com/arrow-py/arrow/issues/757).
+    # "dateutil": ...,  # Not supported.
+    "pendulum": pendulum.parse,
+    # "python": ...,  # Not supported.
+    # "udatetime": ...,  # Not supported.
+    "pydantic": TypeAdapter(datetime.timedelta).validate_python,
+    "pandas": pd.Timedelta,
+}
+
+
+@pytest.mark.parametrize("library", libraries_parse_utc_from_iso_8601_duration)
+def test_parse_utc_from_iso_8601_duration(
+    benchmark: Callable[..., Any],
+    library: str,
+) -> None:
+    # Functions from different libraries give the same result.
+    iso8601_examples = [
+        # "P3Y6M4DT12H30M5S",  # Raises "ValueError: Invalid ISO 8601 Duration format"
+        # "P4Y",  # Raises "ValueError: Invalid ISO 8601 Duration format"
+        "P1DT12H",
+    ]
+    durations = [
+        func(iso8601_examples[0])  # type: ignore[operator]
+        for func in libraries_parse_utc_from_iso_8601_duration.values()
+    ]
+    assert len({dt.total_seconds() for dt in durations}) == 1
+
+    benchmark(libraries_parse_utc_from_iso_8601_duration[library], iso8601_examples[0])
 
 
 libraries_parse_utc_from_rfc_3339 = {
