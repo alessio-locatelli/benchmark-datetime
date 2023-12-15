@@ -29,7 +29,7 @@ Suggestions and contributions are welcome.
 ## How to run
 
 ```sh
-pytest benchmark_datetime/benchmark.py --benchmark-group-by=func
+pytest benchmark/ --benchmark-group-by=func
 ```
 
 ## Histogram
