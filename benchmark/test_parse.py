@@ -44,6 +44,7 @@ libraries_parse_utc_from_iso_8601 = {
     "python": datetime.datetime.fromisoformat,
     "udatetime": udatetime.from_string,
     "pydantic": TypeAdapter(pydantic.AwareDatetime).validate_python,
+    "pandas": lambda dt: pd.Timestamp(dt).to_pydatetime(),
 }
 
 
@@ -97,6 +98,7 @@ libraries_parse_utc_from_rfc_3339 = {
     "python": datetime.datetime.fromisoformat,
     "udatetime": udatetime.from_string,
     "pydantic": TypeAdapter(pydantic.AwareDatetime).validate_python,
+    "pandas": lambda dt: pd.Timestamp(dt).to_pydatetime(),
 }
 
 
