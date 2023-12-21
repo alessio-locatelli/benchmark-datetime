@@ -147,22 +147,22 @@ def test_timedelta_to_seconds(benchmark: Callable[..., Any], library: str) -> No
     benchmark(func, arg)
 
 
-libraries_isoweekday = {
-    "arrow": (lambda dt: dt.isoweekday(), arrow.utcnow()),
+libraries_weekday = {
+    "arrow": (lambda dt: dt.weekday(), arrow.utcnow()),
     # "dateutil": ...,  # Not supported.
     "pendulum": (lambda td: td.day_of_week, pendulum.now(pendulum.UTC)),
-    "python": (lambda td: td.isoweekday(), datetime.datetime.now(datetime.UTC)),
-    "udatetime": (lambda td: td.isoweekday(), udatetime.utcnow()),
+    "python": (lambda td: td.weekday(), datetime.datetime.now(datetime.UTC)),
+    "udatetime": (lambda td: td.weekday(), udatetime.utcnow()),
     # "pydantic": ...,  # Not relevant.
 }
 
 
-@pytest.mark.parametrize("library", libraries_isoweekday)
-def test_isoweekday(benchmark: Callable[..., Any], library: str) -> None:
+@pytest.mark.parametrize("library", libraries_weekday)
+def test_weekday(benchmark: Callable[..., Any], library: str) -> None:
     # Functions from different libraries give the same result.
-    assert len({func(arg) for func, arg in libraries_isoweekday.values()}) == 1
+    assert len({func(arg) for func, arg in libraries_weekday.values()}) == 1
 
-    func, arg = (libraries_isoweekday[library][0], libraries_isoweekday[library][1])
+    func, arg = (libraries_weekday[library][0], libraries_weekday[library][1])
     benchmark(func, arg)
 
 
