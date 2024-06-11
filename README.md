@@ -2,13 +2,13 @@
 
 Compare:
 
-- Python 3.11.6 [`datetime`](https://docs.python.org/3/library/datetime.html)
-- [python-dateutil](https://github.com/dateutil/dateutil) 2.8.2
-- [arrow](https://github.com/arrow-py/arrow/) 1.3.0
-- [pendulum](https://github.com/sdispater/pendulum) 3.0.0
-- [udatetime](https://github.com/freach/udatetime) 0.0.17
-- [pydantic](https://github.com/pydantic/pydantic) 2.5.2 (used only in benchmarks where we parse an argument)
-- [pandas](https://pandas.pydata.org/) 2.1.4 (used only in benchmarks where we parse an argument)
+- Python 3.12.3 [`datetime`](https://docs.python.org/3/library/datetime.html)
+- [python-dateutil](https://github.com/dateutil/dateutil)
+- [arrow](https://github.com/arrow-py/arrow/)
+- [pendulum](https://github.com/sdispater/pendulum)
+- [udatetime](https://github.com/freach/udatetime)
+- [pydantic](https://github.com/pydantic/pydantic) (used only in benchmarks where we parse an argument)
+- [pandas](https://pandas.pydata.org/) (used only in benchmarks where we parse an argument)
 
 There are three types of benchmarks or three types of actions you can do in your code:
 
