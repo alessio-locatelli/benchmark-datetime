@@ -36,23 +36,23 @@ pytest benchmark/ --benchmark-group-by=func --benchmark-histogram
 
 ### Parsing
 
-![](./benchmark_histogram/parse/benchmark-test_parse_utc_from_iso_8601.svg)
-![](./benchmark_histogram/parse/benchmark-test_parse_utc_from_rfc_3339.svg)
-![](./benchmark_histogram/parse/benchmark-test_parse_utc_from_iso_8601_duration.svg)
-![](./benchmark_histogram/parse/benchmark-test_parse_utc_from_timestamp.svg)
+![](./benchmark_histogram/parse/test_parse_utc_from_iso_8601.svg)
+![](./benchmark_histogram/parse/test_parse_utc_from_rfc_3339.svg)
+![](./benchmark_histogram/parse/test_parse_utc_from_iso_8601_duration.svg)
+![](./benchmark_histogram/parse/test_parse_utc_from_timestamp.svg)
 
 ### Manipulating
 
-![](./benchmark_histogram/manipulate/benchmark-test_now_utc.svg)
-![](./benchmark_histogram/manipulate/benchmark-test_now_local.svg)
-![](./benchmark_histogram/manipulate/benchmark-test_isoweekday.svg)
-![](./benchmark_histogram/manipulate/benchmark-test_add_timedelta.svg)
-![](./benchmark_histogram/manipulate/benchmark-test_find_next_saturday.svg)
-![](./benchmark_histogram/manipulate/benchmark-test_timedelta_to_seconds.svg)
+![](./benchmark_histogram/manipulate/test_now_utc.svg)
+![](./benchmark_histogram/manipulate/test_now_local.svg)
+![](./benchmark_histogram/manipulate/test_isoweekday.svg)
+![](./benchmark_histogram/manipulate/test_add_timedelta.svg)
+![](./benchmark_histogram/manipulate/test_find_next_saturday.svg)
+![](./benchmark_histogram/manipulate/test_timedelta_to_seconds.svg)
 
 ### Dumping
 
-![](./benchmark_histogram/dump/benchmark-test_convert_dt_to_isoformat_string.svg)
+![](./benchmark_histogram/dump/test_convert_dt_to_isoformat_string.svg)
 
 ## Results summary
 
