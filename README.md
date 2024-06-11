@@ -2,13 +2,13 @@
 
 Compare:
 
-- Python 3.11.6 [`datetime`](https://docs.python.org/3/library/datetime.html)
-- [python-dateutil](https://github.com/dateutil/dateutil) 2.8.2
-- [arrow](https://github.com/arrow-py/arrow/) 1.3.0
-- [pendulum](https://github.com/sdispater/pendulum) 3.0.0
-- [udatetime](https://github.com/freach/udatetime) 0.0.17
-- [pydantic](https://github.com/pydantic/pydantic) 2.5.2 (used only in benchmarks where we parse an argument)
-- [pandas](https://pandas.pydata.org/) 2.1.4 (used only in benchmarks where we parse an argument)
+- Python 3.12.3 [`datetime`](https://docs.python.org/3/library/datetime.html)
+- [python-dateutil](https://github.com/dateutil/dateutil)
+- [arrow](https://github.com/arrow-py/arrow/)
+- [pendulum](https://github.com/sdispater/pendulum)
+- [udatetime](https://github.com/freach/udatetime)
+- [pydantic](https://github.com/pydantic/pydantic) (used only in benchmarks where we parse an argument)
+- [pandas](https://pandas.pydata.org/) (used only in benchmarks where we parse an argument)
 
 There are three types of benchmarks or three types of actions you can do in your code:
 
@@ -36,23 +36,23 @@ pytest benchmark/ --benchmark-group-by=func --benchmark-histogram
 
 ### Parsing
 
-![](./benchmark_histogram/parse/benchmark-test_parse_utc_from_iso_8601.svg)
-![](./benchmark_histogram/parse/benchmark-test_parse_utc_from_rfc_3339.svg)
-![](./benchmark_histogram/parse/benchmark-test_parse_utc_from_iso_8601_duration.svg)
-![](./benchmark_histogram/parse/benchmark-test_parse_utc_from_timestamp.svg)
+![](./benchmark_histogram/parse/test_parse_utc_from_iso_8601.svg)
+![](./benchmark_histogram/parse/test_parse_utc_from_rfc_3339.svg)
+![](./benchmark_histogram/parse/test_parse_utc_from_iso_8601_duration.svg)
+![](./benchmark_histogram/parse/test_parse_utc_from_timestamp.svg)
 
 ### Manipulating
 
-![](./benchmark_histogram/manipulate/benchmark-test_now_utc.svg)
-![](./benchmark_histogram/manipulate/benchmark-test_now_local.svg)
-![](./benchmark_histogram/manipulate/benchmark-test_isoweekday.svg)
-![](./benchmark_histogram/manipulate/benchmark-test_add_timedelta.svg)
-![](./benchmark_histogram/manipulate/benchmark-test_find_next_saturday.svg)
-![](./benchmark_histogram/manipulate/benchmark-test_timedelta_to_seconds.svg)
+![](./benchmark_histogram/manipulate/test_now_utc.svg)
+![](./benchmark_histogram/manipulate/test_now_local.svg)
+![](./benchmark_histogram/manipulate/test_isoweekday.svg)
+![](./benchmark_histogram/manipulate/test_add_timedelta.svg)
+![](./benchmark_histogram/manipulate/test_find_next_saturday.svg)
+![](./benchmark_histogram/manipulate/test_timedelta_to_seconds.svg)
 
 ### Dumping
 
-![](./benchmark_histogram/dump/benchmark-test_convert_dt_to_isoformat_string.svg)
+![](./benchmark_histogram/dump/test_convert_dt_to_isoformat_string.svg)
 
 ## Results summary
 
