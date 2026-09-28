@@ -1,15 +1,17 @@
 import datetime
-from collections.abc import Callable
 from functools import partial
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import arrow
 import pendulum
 import pytest
-import udatetime  # type: ignore[import-untyped]
+import udatetime
 from dateutil import tz
 from dateutil.relativedelta import SA, relativedelta
 from faker import Faker
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 fake = Faker()
 
@@ -60,7 +62,7 @@ timedelta_kwargs = dict(
 libraries_shift_forward = {
     "arrow": (lambda dt: dt.shift(**timedelta_kwargs), arrow.utcnow()),
     "dateutil": (
-        lambda dt: dt + relativedelta(**timedelta_kwargs),
+        lambda dt: dt + relativedelta(**timedelta_kwargs),  # type: ignore[arg-type]
         datetime.datetime.now(tz.UTC),
     ),
     "pendulum": (lambda dt: dt.add(**timedelta_kwargs), pendulum.now(pendulum.UTC)),
@@ -92,7 +94,7 @@ timedelta_kwargs_negative = dict(
 libraries_shift_backward = {
     "arrow": (lambda dt: dt.shift(**timedelta_kwargs_negative), arrow.utcnow()),
     "dateutil": (
-        lambda dt: dt + relativedelta(**timedelta_kwargs_negative),
+        lambda dt: dt + relativedelta(**timedelta_kwargs_negative),  # type: ignore[arg-type]
         datetime.datetime.now(tz.UTC),
     ),
     "pendulum": (
@@ -112,9 +114,9 @@ libraries_shift_backward = {
 def test_substract_timedelta(benchmark: Callable[..., Any], library: str) -> None:
     # Functions from different libraries give the same result.
     providers_datetimes = {k: v[0](v[1]) for k, v in libraries_shift_forward.items()}
-    assert (
-        len({dt.day for dt in providers_datetimes.values()}) == 1
-    ), providers_datetimes
+    assert len({dt.day for dt in providers_datetimes.values()}) == 1, (
+        providers_datetimes
+    )
 
     func, arg = (
         libraries_shift_backward[library][0],

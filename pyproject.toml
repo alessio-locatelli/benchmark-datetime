@@ -5,15 +5,15 @@ description = ""
 readme = "README.md"
 requires-python = ">=3.14.7"
 dependencies = [
-    "arrow>=1.4.0",
-    "faker>=40.39.0",
-    "pandas>=3.0.6",
-    "pendulum>=3.2.0",
-    "pydantic>=2.13.5",
-    "pytest>=9.1.1",
-    "pytest-benchmark>=5.3.0",
-    "python-dateutil>=2.9.0.post0",
-    "udatetime>=0.0.17",
+  "arrow>=1.4.0",
+  "faker>=40.39.0",
+  "pandas>=3.0.6",
+  "pendulum>=3.2.0",
+  "pydantic>=2.13.5",
+  "pytest>=9.1.1",
+  "pytest-benchmark>=5.3.0",
+  "python-dateutil>=2.9.0.post0",
+  "udatetime>=0.0.17",
 ]
 
 [project.scripts]
@@ -22,3 +22,19 @@ benchmark-datetime = "benchmark_datetime:main"
 [build-system]
 requires = ["uv_build>=0.12.19,<0.13.0"]
 build-backend = "uv_build"
+
+[tool.vulture]
+paths = ["src", ".vulture_whitelist"]
+
+[tool.ruff-extra-rules]
+fix = true
+exclude = ["specifications"]
+extend-select = ["unused-pytriage"]
+[tool.ruff-extra-rules.meaningless-vars]
+level = "aggressive"
+[tool.ruff-extra-rules.redundant-assignment]
+level = "aggressive"
+[tool.ruff-extra-rules.redundant-type-conversion]
+level = "aggressive"
+[tool.ruff-extra-rules.redundant-dict-get]
+level = "aggressive"

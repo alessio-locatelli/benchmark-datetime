@@ -16,20 +16,10 @@ There are three types of benchmarks or three types of actions you can do in your
 - Parsing (for example, converting a string to an object).
 - Dumping (for example, converting an object to a string).
 
-## How to setup
-
-1. Install [Poetry](https://python-poetry.org/).
-2. Activate the virtual environment and install dependencies: `poetry shell && poetry install`.
-
-Some packages (for example, `udatetime`) may require additional dependencies for building from source.
-Read the documentation for specific packages if the installation fails.
-
-Suggestions and contributions are welcome.
-
 ## How to run
 
 ```sh
-pytest benchmark/ --benchmark-group-by=func --benchmark-histogram
+uv run -- pytest src/benchmark_datetime --benchmark-group-by=func --benchmark-histogram
 ```
 
 ## Histogram

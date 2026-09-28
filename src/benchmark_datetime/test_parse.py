@@ -1,6 +1,5 @@
 import datetime
-from collections.abc import Callable
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import arrow
 import dateutil
@@ -8,9 +7,12 @@ import pandas as pd
 import pendulum
 import pydantic
 import pytest
-import udatetime  # type: ignore[import-untyped]
+import udatetime
 from faker import Faker
 from pydantic import TypeAdapter
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 fake = Faker()
 

@@ -1,104 +1,26 @@
-target-version = "py311"
+target-version = "py314"
 
 extend-exclude = [
-    ".cache",
-    ".pytest_cache",
-    ".vscode",
-    "data",
-    "docs",
-    "resources",
-    "pdoc",
+  ".cache",
+  ".pytest_cache",
+  ".vscode",
+  "data",
+  "docs",
+  "resources",
+  "pdoc",
 ]
+force-exclude = true
+
+[lint]
 ignore = [
-    # C408 Unnecessary `dict` call (rewrite as a literal)
-    "C408",
-    # Missing docstring in [...] 
-    "D1",
-    # `one-blank-line-before-class` (D203)
-    "D203",
-    # `multi-line-summary-second-line` (D213)
-    "D213",
-    # assert (S101)
-    "S101"
+  # unnecessary-collection-call
+  "C408",
+  "D",
+  # assert
+  "S101",
+  # commented-out-code
+  "ERA001",
+  # missing-copyright-notice
+  "CPY001",
 ]
-select = [
-    # Pyflakes
-    "F",
-    # pycodestyle (E, W)
-    "E",
-    "W",
-    # mccabe
-    "C90",
-    # isort
-    "I",
-    # pep8-naming
-    "N",
-    # pydocstyle
-    "D",
-    # pyupgrade
-    "UP",
-    # flake8-async
-    "ASYNC",
-    # flake8-bandit
-    "S",
-    # flake8-boolean-trap
-    "FBT",
-    # flake8-bugbear
-    "B",
-    # flake8-builtins
-    "A",
-    # flake8-commas
-    "COM",
-    # flake8-comprehensions
-    "C4",
-    # flake8-datetimez
-    "DTZ",
-    # flake8-executable
-    "EXE",
-    # flake8-future-annotations
-    "FA",
-    # flake8-implicit-str-concat
-    "ISC",
-    # flake8-pie
-    "PIE",
-    # flake8-pytest-style
-    "PT",
-    # flake8-raise
-    "RSE",
-    # flake8-return
-    "RET",
-    # flake8-slots
-    "SLOT",
-    # flake8-simplify
-    "SIM",
-    # flake8-unused-arguments
-    "ARG",
-    # flake8-use-pathlib
-    "PTH",
-    # flake8-todos
-    "TD",
-    # pandas-vet
-    "PD",
-    # pygrep-hooks
-    "PGH",
-    # Pylint
-    "PL",
-    # tryceratops
-    "TRY",
-    # flynt
-    "FLY",
-    # NumPy-specific rules
-    "NPY",
-    # Perflint
-    "PERF",
-    # refurb
-    "FURB",
-    # flake8-logging
-    "LOG",
-    # Ruff-specific rules
-    "RUF",
-    # flake8-quotes
-    "Q",
-    # flake8-debugger
-    "T10",
-]
+select = ["ALL"]
