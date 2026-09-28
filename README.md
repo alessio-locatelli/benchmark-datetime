@@ -2,7 +2,7 @@
 
 Compare:
 
-- Python 3.12.3 [`datetime`](https://docs.python.org/3/library/datetime.html)
+- Python 3.14.7 [`datetime`](https://docs.python.org/3/library/datetime.html)
 - [python-dateutil](https://github.com/dateutil/dateutil)
 - [arrow](https://github.com/arrow-py/arrow/)
 - [pendulum](https://github.com/sdispater/pendulum)
