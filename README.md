@@ -19,7 +19,7 @@ There are three types of benchmarks or three types of actions you can do in your
 ## How to run
 
 ```sh
-uv run -- pytest src/benchmark_datetime --benchmark-group-by=func --benchmark-histogram
+uv run -- pytest src/benchmark_datetime --benchmark-group-by=func --benchmark-histogram="benchmark_histogram/"
 ```
 
 ## Histogram
