@@ -11,7 +11,7 @@ dependencies = [
   "pendulum>=3.2.0",
   "pydantic>=2.13.5",
   "pytest>=9.1.1",
-  "pytest-benchmark>=5.3.0",
+  "pytest-benchmark[histogram]>=5.3.0",
   "python-dateutil>=2.9.0.post0",
   "udatetime>=0.0.17",
 ]
