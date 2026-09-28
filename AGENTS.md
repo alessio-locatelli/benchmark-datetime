@@ -1,3 +1,11 @@
+## Review checklist
+
+- The benchmark architecture and setup are correct.
+- Libraries are compared in an equivalent way so that their outputs (date and time parsing, conversion, or manipulation) are identical.
+- Each library is used correctly, according to its documentation, and in the most efficient way available.
+- Each library participates in all benchmarks that its available features support.
+- Documentation (README, etc.) is in sync with the code, and the information is correct.
+
 ## How to update benchmarks
 
 The steps are roughly as follows:
