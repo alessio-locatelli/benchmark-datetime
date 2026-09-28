@@ -35,8 +35,9 @@ uv run -- pytest src/benchmark_datetime --benchmark-group-by=func --benchmark-hi
 
 ![](./benchmark_histogram/-test_now_utc.svg)
 ![](./benchmark_histogram/-test_now_local.svg)
-![](./benchmark_histogram/-test_isoweekday.svg)
+![](./benchmark_histogram/-test_weekday.svg)
 ![](./benchmark_histogram/-test_add_timedelta.svg)
+![](./benchmark_histogram/-test_substract_timedelta.svg)
 ![](./benchmark_histogram/-test_find_next_saturday.svg)
 ![](./benchmark_histogram/-test_timedelta_to_seconds.svg)
 
