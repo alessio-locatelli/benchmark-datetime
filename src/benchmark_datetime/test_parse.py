@@ -96,7 +96,7 @@ def test_parse_utc_from_iso_8601_duration(
 
 libraries_parse_utc_from_rfc_3339 = {
     "arrow": arrow.get,
-    # "dateutil": ...,  # Not supported.
+    "dateutil": dateutil.parser.isoparse,
     "pendulum": pendulum.parse,
     "python": datetime.datetime.fromisoformat,
     "udatetime": udatetime.from_string,
