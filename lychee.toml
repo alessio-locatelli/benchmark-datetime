@@ -1,0 +1,12 @@
+verbose = "info"
+mode = "plain"
+max_redirects = 1
+method = "head"
+cache = true
+max_cache_age = "14d"
+accept = "200..=204,400,401,403,405,429,500,503,504"
+exclude_all_private = true
+exclude_path = ['lychee.toml', 'LICENSE']
+exclude = [
+  "svg$", # Temporary exclude images in README until recreated.
+]
