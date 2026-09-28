@@ -175,7 +175,10 @@ libraries_find_next_saturday = {
         lambda dt: dt + relativedelta(weekday=SA(+1)),
         datetime.datetime.now(tz.UTC),
     ),
-    "pendulum": (lambda dt: dt.next(pendulum.SATURDAY), pendulum.now(pendulum.UTC)),
+    "pendulum": (
+        lambda dt: dt if dt.day_of_week == SATURDAY else dt.next(pendulum.SATURDAY),
+        pendulum.now(pendulum.UTC),
+    ),
     "python": (
         lambda dt: dt + datetime.timedelta((7 + SATURDAY - dt.weekday()) % 7),
         datetime.datetime.now(datetime.UTC),
