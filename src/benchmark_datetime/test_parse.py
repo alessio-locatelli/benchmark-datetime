@@ -1,4 +1,5 @@
 import datetime
+from functools import partial
 from typing import TYPE_CHECKING, Any
 
 import arrow
@@ -21,7 +22,7 @@ libraries_parse_utc_from_unix_timestamp = {
     "arrow": arrow.get,
     # "dateutil": ...,  # Not supported.
     "pendulum": pendulum.from_timestamp,
-    "python": datetime.datetime.utcfromtimestamp,
+    "python": partial(datetime.datetime.fromtimestamp, tz=datetime.UTC),
     "udatetime": udatetime.utcfromtimestamp,
     "pydantic": TypeAdapter(pydantic.AwareDatetime).validate_python,
 }
