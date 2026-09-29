@@ -78,6 +78,7 @@ repos:
             pandas,
             pandas-stubs,
             types-python-dateutil,
+            whenever,
           ]
 
   - repo: local

@@ -6,6 +6,7 @@ import pendulum
 import pytest
 import udatetime
 from faker import Faker
+from whenever import OffsetDateTime
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -20,6 +21,10 @@ libraries_convert_dt_to_isoformat_string = {
     "python": (lambda dt: dt.isoformat(), datetime.datetime.now(datetime.UTC)),
     "udatetime": (udatetime.to_string, udatetime.utcnow()),
     # "pydantic": ...,  # Not relevant.
+    "whenever": (
+        lambda dt: dt.format_iso(unit="microsecond"),
+        OffsetDateTime.now(0, stale_offset_ok=True),
+    ),
 }
 
 
