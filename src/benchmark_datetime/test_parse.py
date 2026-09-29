@@ -21,6 +21,9 @@ Faker.seed(0)
 
 EQUIVALENCE_TOLERANCE_SECONDS = 0.01
 
+UNIX_TIMESTAMP_INPUT = fake.unix_time()
+ISO_8601_INPUT = fake.iso8601(tzinfo=datetime.UTC)
+
 
 def _epoch_seconds(
     dt: datetime.datetime | arrow.Arrow | pendulum.DateTime | Instant | OffsetDateTime,
@@ -43,14 +46,13 @@ libraries_parse_utc_from_unix_timestamp = {
 
 @pytest.mark.parametrize("library", libraries_parse_utc_from_unix_timestamp)
 def test_parse_utc_from_timestamp(benchmark: Callable[..., Any], library: str) -> None:
-    unix_time = fake.unix_time()
     timestamps = [
-        _epoch_seconds(func(unix_time))
+        _epoch_seconds(func(UNIX_TIMESTAMP_INPUT))
         for func in libraries_parse_utc_from_unix_timestamp.values()
     ]
     assert max(timestamps) - min(timestamps) < EQUIVALENCE_TOLERANCE_SECONDS, timestamps
 
-    benchmark(libraries_parse_utc_from_unix_timestamp[library], unix_time)
+    benchmark(libraries_parse_utc_from_unix_timestamp[library], UNIX_TIMESTAMP_INPUT)
 
 
 libraries_parse_utc_from_iso_8601 = {
@@ -67,14 +69,13 @@ libraries_parse_utc_from_iso_8601 = {
 
 @pytest.mark.parametrize("library", libraries_parse_utc_from_iso_8601)
 def test_parse_utc_from_iso_8601(benchmark: Callable[..., Any], library: str) -> None:
-    fake_iso8601 = fake.iso8601(tzinfo=datetime.UTC)
     timestamps = [
-        _epoch_seconds(func(fake_iso8601))
+        _epoch_seconds(func(ISO_8601_INPUT))
         for func in libraries_parse_utc_from_iso_8601.values()
     ]
     assert max(timestamps) - min(timestamps) < EQUIVALENCE_TOLERANCE_SECONDS, timestamps
 
-    benchmark(libraries_parse_utc_from_iso_8601[library], fake_iso8601)
+    benchmark(libraries_parse_utc_from_iso_8601[library], ISO_8601_INPUT)
 
 
 libraries_parse_utc_from_iso_8601_duration = {
@@ -124,25 +125,32 @@ libraries_parse_utc_from_rfc_3339 = {
 }
 
 
+RFC_3339_EXAMPLES = [
+    # Examples are taken from https://datatracker.ietf.org/doc/html/rfc3339.
+    "1985-04-12T23:20:50.52Z",
+    "1996-12-19T16:39:57-08:00",
+    # "1990-12-31T23:59:60Z",  # Can not be parsed out of the box.
+    # "1990-12-31T15:59:60-08:00",  # Can not be parsed out of the box.
+    "1937-01-01T12:00:27.87+00:20",
+]
+
+
 @pytest.mark.parametrize("library", libraries_parse_utc_from_rfc_3339)
 def test_parse_utc_from_rfc_3339(benchmark: Callable[..., Any], library: str) -> None:
-    timestamps = [
-        _epoch_seconds(func("1996-12-19T16:39:57-08:00"))
-        for func in libraries_parse_utc_from_rfc_3339.values()
-    ]
-    assert max(timestamps) - min(timestamps) < EQUIVALENCE_TOLERANCE_SECONDS, timestamps
+    for rfc_3339_datetime in RFC_3339_EXAMPLES:
+        timestamps = [
+            _epoch_seconds(func(rfc_3339_datetime))
+            for func in libraries_parse_utc_from_rfc_3339.values()
+        ]
+        assert max(timestamps) - min(timestamps) < EQUIVALENCE_TOLERANCE_SECONDS, (
+            rfc_3339_datetime,
+            timestamps,
+        )
 
     func = libraries_parse_utc_from_rfc_3339[library]
 
     def parse() -> None:
-        for rfc_3339_datetime in [
-            # Examples are taken from https://datatracker.ietf.org/doc/html/rfc3339.
-            "1985-04-12T23:20:50.52Z",
-            "1996-12-19T16:39:57-08:00",
-            # "1990-12-31T23:59:60Z",  # Can not be parsed out of the box.
-            # "1990-12-31T15:59:60-08:00",  # Can not be parsed out of the box.
-            "1937-01-01T12:00:27.87+00:20",
-        ]:
+        for rfc_3339_datetime in RFC_3339_EXAMPLES:
             func(rfc_3339_datetime)
 
     benchmark(parse)

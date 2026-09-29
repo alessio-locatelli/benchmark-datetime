@@ -198,11 +198,15 @@ def test_weekday(benchmark: Callable[..., Any], library: str) -> None:
 
 
 SATURDAY = 5
+FIND_NEXT_SATURDAY_REFERENCE_TUESDAY = (2024, 1, 2, 12, 0, 0)
 libraries_find_next_saturday = {
-    "arrow": (lambda dt: dt.shift(weekday=SATURDAY), arrow.utcnow()),
+    "arrow": (
+        lambda dt: dt.shift(weekday=SATURDAY),
+        arrow.Arrow(*FIND_NEXT_SATURDAY_REFERENCE_TUESDAY),
+    ),
     "dateutil": (
         lambda dt: dt + relativedelta(weekday=SA(+1)),
-        datetime.datetime.now(tz.UTC),
+        datetime.datetime(*FIND_NEXT_SATURDAY_REFERENCE_TUESDAY, tzinfo=tz.UTC),
     ),
     "pendulum": (
         lambda dt: (
@@ -210,11 +214,11 @@ libraries_find_next_saturday = {
             if dt.day_of_week == SATURDAY
             else dt.next(pendulum.SATURDAY, keep_time=True)
         ),
-        pendulum.now(pendulum.UTC),
+        pendulum.datetime(*FIND_NEXT_SATURDAY_REFERENCE_TUESDAY, tz="UTC"),
     ),
     "python": (
         lambda dt: dt + datetime.timedelta((7 + SATURDAY - dt.weekday()) % 7),
-        datetime.datetime.now(datetime.UTC),
+        datetime.datetime(*FIND_NEXT_SATURDAY_REFERENCE_TUESDAY, tzinfo=datetime.UTC),
     ),
     # "udatetime": ..., # Not relevant
     # "pydantic": ...,  # Not relevant.
@@ -224,7 +228,7 @@ libraries_find_next_saturday = {
             if dt.date().day_of_week().value - 1 == SATURDAY
             else dt.add(days=(7 + SATURDAY - (dt.date().day_of_week().value - 1)) % 7)
         ),
-        ZonedDateTime.now("UTC"),
+        ZonedDateTime(*FIND_NEXT_SATURDAY_REFERENCE_TUESDAY, tz="UTC"),
     ),
 }
 
