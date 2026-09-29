@@ -77,5 +77,5 @@ repos:
             faker,
             pandas,
             pandas-stubs,
-            types-python-dateutil
+            types-python-dateutil,
           ]
