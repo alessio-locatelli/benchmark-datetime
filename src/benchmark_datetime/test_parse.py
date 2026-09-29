@@ -17,12 +17,17 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
 fake = Faker()
+Faker.seed(0)
+
+EQUIVALENCE_TOLERANCE_SECONDS = 0.01
 
 
-def _day(dt: datetime.datetime | arrow.Arrow | Instant) -> int:
-    if isinstance(dt, Instant):
-        return dt.to_stdlib().day
-    return dt.day
+def _epoch_seconds(
+    dt: datetime.datetime | arrow.Arrow | pendulum.DateTime | Instant | OffsetDateTime,
+) -> float:
+    if isinstance(dt, Instant | OffsetDateTime):
+        return dt.timestamp_millis() / 1000
+    return dt.timestamp()
 
 
 libraries_parse_utc_from_unix_timestamp = {
@@ -38,12 +43,12 @@ libraries_parse_utc_from_unix_timestamp = {
 
 @pytest.mark.parametrize("library", libraries_parse_utc_from_unix_timestamp)
 def test_parse_utc_from_timestamp(benchmark: Callable[..., Any], library: str) -> None:
-    # Functions from different libraries give the same result.
     unix_time = fake.unix_time()
-    datetimes = [
-        func(unix_time) for func in libraries_parse_utc_from_unix_timestamp.values()
+    timestamps = [
+        _epoch_seconds(func(unix_time))
+        for func in libraries_parse_utc_from_unix_timestamp.values()
     ]
-    assert len({_day(dt) for dt in datetimes}) == 1
+    assert max(timestamps) - min(timestamps) < EQUIVALENCE_TOLERANCE_SECONDS, timestamps
 
     benchmark(libraries_parse_utc_from_unix_timestamp[library], unix_time)
 
@@ -62,12 +67,12 @@ libraries_parse_utc_from_iso_8601 = {
 
 @pytest.mark.parametrize("library", libraries_parse_utc_from_iso_8601)
 def test_parse_utc_from_iso_8601(benchmark: Callable[..., Any], library: str) -> None:
-    # Functions from different libraries give the same result.
     fake_iso8601 = fake.iso8601(tzinfo=datetime.UTC)
-    datetimes = [
-        func(fake_iso8601) for func in libraries_parse_utc_from_iso_8601.values()
+    timestamps = [
+        _epoch_seconds(func(fake_iso8601))
+        for func in libraries_parse_utc_from_iso_8601.values()
     ]
-    assert len({dt.day for dt in datetimes}) == 1
+    assert max(timestamps) - min(timestamps) < EQUIVALENCE_TOLERANCE_SECONDS, timestamps
 
     benchmark(libraries_parse_utc_from_iso_8601[library], fake_iso8601)
 
@@ -121,12 +126,11 @@ libraries_parse_utc_from_rfc_3339 = {
 
 @pytest.mark.parametrize("library", libraries_parse_utc_from_rfc_3339)
 def test_parse_utc_from_rfc_3339(benchmark: Callable[..., Any], library: str) -> None:
-    # Functions from different libraries give the same result.
-    datetimes = [
-        func("1996-12-19T16:39:57-08:00")
+    timestamps = [
+        _epoch_seconds(func("1996-12-19T16:39:57-08:00"))
         for func in libraries_parse_utc_from_rfc_3339.values()
     ]
-    assert len({dt.day for dt in datetimes}) == 1
+    assert max(timestamps) - min(timestamps) < EQUIVALENCE_TOLERANCE_SECONDS, timestamps
 
     func = libraries_parse_utc_from_rfc_3339[library]
 
