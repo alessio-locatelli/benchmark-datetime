@@ -12,6 +12,9 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
 fake = Faker()
+Faker.seed(0)
+
+EQUIVALENCE_TOLERANCE_SECONDS = 2.0
 
 
 libraries_convert_dt_to_isoformat_string = {
@@ -33,11 +36,13 @@ def test_convert_dt_to_isoformat_string(
     benchmark: Callable[..., Any],
     library: str,
 ) -> None:
-    # Functions from different libraries give the same result.
     iso_strings = [
         func(arg) for func, arg in libraries_convert_dt_to_isoformat_string.values()
     ]
-    assert len({len(s) for s in iso_strings}) == 1, {s: len(s) for s in iso_strings}
+    timestamps = [datetime.datetime.fromisoformat(s).timestamp() for s in iso_strings]
+    assert max(timestamps) - min(timestamps) < EQUIVALENCE_TOLERANCE_SECONDS, (
+        iso_strings
+    )
 
     func, arg = (
         libraries_convert_dt_to_isoformat_string[library][0],

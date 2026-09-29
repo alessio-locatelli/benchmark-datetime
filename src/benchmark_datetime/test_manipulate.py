@@ -15,6 +15,18 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
 fake = Faker()
+Faker.seed(0)
+
+EQUIVALENCE_TOLERANCE_SECONDS = 2.0
+
+
+def _epoch_seconds(
+    dt: datetime.datetime | arrow.Arrow | pendulum.DateTime | ZonedDateTime,
+) -> float:
+    if isinstance(dt, ZonedDateTime):
+        return dt.timestamp_millis() / 1000
+    return dt.timestamp()
+
 
 libraries_now_utc = {
     "arrow": arrow.utcnow,
@@ -29,9 +41,8 @@ libraries_now_utc = {
 
 @pytest.mark.parametrize("library", libraries_now_utc)
 def test_now_utc(benchmark: Callable[..., Any], library: str) -> None:
-    # Functions from different libraries give the same result.
-    datetimes = [func() for func in libraries_now_utc.values()]
-    assert len({dt.hour for dt in datetimes}) == 1
+    timestamps = [_epoch_seconds(func()) for func in libraries_now_utc.values()]
+    assert max(timestamps) - min(timestamps) < EQUIVALENCE_TOLERANCE_SECONDS, timestamps
 
     benchmark(libraries_now_utc[library])
 
@@ -49,9 +60,8 @@ libraries_now_local = {
 
 @pytest.mark.parametrize("library", libraries_now_local)
 def test_now_local(benchmark: Callable[..., Any], library: str) -> None:
-    # Functions from different libraries give the same result.
-    datetimes = [func() for func in libraries_now_local.values()]
-    assert len({dt.hour for dt in datetimes}) == 1
+    timestamps = [_epoch_seconds(func()) for func in libraries_now_local.values()]
+    assert max(timestamps) - min(timestamps) < EQUIVALENCE_TOLERANCE_SECONDS, timestamps
 
     benchmark(libraries_now_local[library])
 
@@ -81,9 +91,10 @@ libraries_shift_forward = {
 
 @pytest.mark.parametrize("library", libraries_shift_forward)
 def test_add_timedelta(benchmark: Callable[..., Any], library: str) -> None:
-    # Functions from different libraries give the same result.
-    datetimes = [func(arg) for func, arg in libraries_shift_forward.values()]
-    assert len({dt.day for dt in datetimes}) == 1, datetimes
+    timestamps = [
+        _epoch_seconds(func(arg)) for func, arg in libraries_shift_forward.values()
+    ]
+    assert max(timestamps) - min(timestamps) < EQUIVALENCE_TOLERANCE_SECONDS, timestamps
 
     func, arg = libraries_shift_forward[library][0], libraries_shift_forward[library][1]
     benchmark(func, arg)
@@ -120,11 +131,13 @@ libraries_shift_backward = {
 
 @pytest.mark.parametrize("library", libraries_shift_backward)
 def test_substract_timedelta(benchmark: Callable[..., Any], library: str) -> None:
-    # Functions from different libraries give the same result.
-    providers_datetimes = {k: v[0](v[1]) for k, v in libraries_shift_forward.items()}
-    assert len({dt.day for dt in providers_datetimes.values()}) == 1, (
-        providers_datetimes
-    )
+    timestamps = {
+        k: _epoch_seconds(v[0](v[1])) for k, v in libraries_shift_backward.items()
+    }
+    assert (
+        max(timestamps.values()) - min(timestamps.values())
+        < EQUIVALENCE_TOLERANCE_SECONDS
+    ), timestamps
 
     func, arg = (
         libraries_shift_backward[library][0],
@@ -192,7 +205,11 @@ libraries_find_next_saturday = {
         datetime.datetime.now(tz.UTC),
     ),
     "pendulum": (
-        lambda dt: dt if dt.day_of_week == SATURDAY else dt.next(pendulum.SATURDAY),
+        lambda dt: (
+            dt
+            if dt.day_of_week == SATURDAY
+            else dt.next(pendulum.SATURDAY, keep_time=True)
+        ),
         pendulum.now(pendulum.UTC),
     ),
     "python": (
@@ -214,9 +231,10 @@ libraries_find_next_saturday = {
 
 @pytest.mark.parametrize("library", libraries_find_next_saturday)
 def test_find_next_saturday(benchmark: Callable[..., Any], library: str) -> None:
-    # Functions from different libraries give the same result.
-    datetimes = [func(arg) for func, arg in libraries_find_next_saturday.values()]
-    assert len({dt.day for dt in datetimes}) == 1
+    timestamps = [
+        _epoch_seconds(func(arg)) for func, arg in libraries_find_next_saturday.values()
+    ]
+    assert max(timestamps) - min(timestamps) < EQUIVALENCE_TOLERANCE_SECONDS, timestamps
 
     func, arg = (
         libraries_find_next_saturday[library][0],
