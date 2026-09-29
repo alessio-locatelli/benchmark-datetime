@@ -34,7 +34,7 @@ The published results below were captured on:
 
 Absolute nanosecond figures will vary on different hardware. Large gaps between libraries are likely to generalize; close results (within a few percent) can flip between runs due to measurement noise, so don't read too much into a narrow margin.
 
-`pytest-benchmark` reports Min/Max/Mean/Median/StdDev/IQR per library; the summary below and the linked article both rank libraries by **Mean**, matching the `OPS (1 / Mean)` column in the raw results.
+`pytest-benchmark` reports Min/Max/Mean/Median/StdDev/IQR per library; the summary below ranks libraries by **Mean**, matching the `OPS (1 / Mean)` column in the raw results.
 
 ## Histogram
 
