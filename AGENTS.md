@@ -1,3 +1,21 @@
+## Adding a new library to benchmarks
+
+1. Add it to dependencies via `uv add`.
+2. Investigate the library's documentation and repository for any existing benchmarks. If available, use them for inspiration and to understand best practices (the library authors are likely best positioned to know how to use the library correctly and efficiently).
+3. Identify all benchmarks (date and time parsing, manipulation, dumping, etc.) where the library can participate.
+4. Can we add new tests for date and time parsing, dumping, or manipulation? For example, look for practical usage cases that exist but have never been tested.
+5. Extend and update tests.
+6. Refer to the section on updating the benchmarks report to refresh the histograms and README.
+
+Final Report:
+
+- New tests (if any; if none, state "no new tests").
+- Whether the library publishes its own benchmarks and whether they align with our results.
+- Where the library ranks compared to alternatives based on our benchmarks.
+- List the tests that were extended and the tests where the library could not be added.
+
+---
+
 ## Review checklist
 
 - The benchmark architecture and setup are correct.
@@ -5,6 +23,8 @@
 - Each library is used correctly, according to its documentation, and in the most efficient way available.
 - Each library participates in all benchmarks that its available features support.
 - Documentation (README, etc.) is in sync with the code, and the information is correct.
+
+---
 
 ## How to update benchmarks
 
