@@ -9,6 +9,7 @@ import udatetime
 from dateutil import tz
 from dateutil.relativedelta import SA, relativedelta
 from faker import Faker
+from whenever import TimeDelta, ZonedDateTime
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -22,6 +23,7 @@ libraries_now_utc = {
     "python": partial(datetime.datetime.now, datetime.UTC),
     "udatetime": udatetime.utcnow,
     # "pydantic": ... # Not relevant.
+    "whenever": partial(ZonedDateTime.now, "UTC"),
 }
 
 
@@ -41,6 +43,7 @@ libraries_now_local = {
     "python": datetime.datetime.now,
     "udatetime": udatetime.now,
     # "pydantic": ... # Not relevant.
+    "whenever": ZonedDateTime.now_in_system_tz,
 }
 
 
@@ -72,6 +75,7 @@ libraries_shift_forward = {
     ),
     # "udatetime": ...,  # Not relevant.
     # "pydantic": ...,  # Not relevant.
+    "whenever": (lambda dt: dt.add(**timedelta_kwargs), ZonedDateTime.now("UTC")),
 }
 
 
@@ -107,6 +111,10 @@ libraries_shift_backward = {
     ),
     # "udatetime": ...,  # Not relevant.
     # "pydantic": ...,  # Not relevant.
+    "whenever": (
+        lambda dt: dt.add(**timedelta_kwargs_negative),
+        ZonedDateTime.now("UTC"),
+    ),
 }
 
 
@@ -132,6 +140,10 @@ libraries_timedelta_to_seconds = {
     "python": (lambda td: td.total_seconds(), datetime.timedelta(**timedelta_kwargs)),
     # "udatetime": ...,  # Not relevant.
     # "pydantic": ...,  # Not relevant.
+    "whenever": (
+        lambda td: td.total("seconds"),
+        TimeDelta(days_assumed_24h_ok=True, **timedelta_kwargs),
+    ),
 }
 
 
@@ -156,6 +168,10 @@ libraries_weekday = {
     "python": (lambda td: td.weekday(), datetime.datetime.now(datetime.UTC)),
     "udatetime": (lambda td: td.weekday(), udatetime.utcnow()),
     # "pydantic": ...,  # Not relevant.
+    "whenever": (
+        lambda dt: dt.date().day_of_week().value - 1,
+        ZonedDateTime.now("UTC"),
+    ),
 }
 
 
@@ -185,6 +201,14 @@ libraries_find_next_saturday = {
     ),
     # "udatetime": ..., # Not relevant
     # "pydantic": ...,  # Not relevant.
+    "whenever": (
+        lambda dt: (
+            dt
+            if dt.date().day_of_week().value - 1 == SATURDAY
+            else dt.add(days=(7 + SATURDAY - (dt.date().day_of_week().value - 1)) % 7)
+        ),
+        ZonedDateTime.now("UTC"),
+    ),
 }
 
 

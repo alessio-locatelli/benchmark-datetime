@@ -11,11 +11,18 @@ import pytest
 import udatetime
 from faker import Faker
 from pydantic import TypeAdapter
+from whenever import Instant, ItemizedDelta, OffsetDateTime, TimeDelta
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
 fake = Faker()
+
+
+def _day(dt: datetime.datetime | arrow.Arrow | Instant) -> int:
+    if isinstance(dt, Instant):
+        return dt.to_stdlib().day
+    return dt.day
 
 
 libraries_parse_utc_from_unix_timestamp = {
@@ -25,6 +32,7 @@ libraries_parse_utc_from_unix_timestamp = {
     "python": partial(datetime.datetime.fromtimestamp, tz=datetime.UTC),
     "udatetime": udatetime.utcfromtimestamp,
     "pydantic": TypeAdapter(pydantic.AwareDatetime).validate_python,
+    "whenever": Instant.from_timestamp,
 }
 
 
@@ -35,7 +43,7 @@ def test_parse_utc_from_timestamp(benchmark: Callable[..., Any], library: str) -
     datetimes = [
         func(unix_time) for func in libraries_parse_utc_from_unix_timestamp.values()
     ]
-    assert len({dt.day for dt in datetimes}) == 1
+    assert len({_day(dt) for dt in datetimes}) == 1
 
     benchmark(libraries_parse_utc_from_unix_timestamp[library], unix_time)
 
@@ -48,6 +56,7 @@ libraries_parse_utc_from_iso_8601 = {
     "udatetime": udatetime.from_string,
     "pydantic": TypeAdapter(pydantic.AwareDatetime).validate_python,
     "pandas": lambda dt: pd.Timestamp(dt).to_pydatetime(),
+    "whenever": OffsetDateTime.parse_iso,
 }
 
 
@@ -71,6 +80,10 @@ libraries_parse_utc_from_iso_8601_duration = {
     # "udatetime": ...,  # Not supported.
     "pydantic": TypeAdapter(datetime.timedelta).validate_python,
     "pandas": pd.Timedelta,
+    "whenever": lambda s: TimeDelta(
+        days_assumed_24h_ok=True,
+        **dict(ItemizedDelta.parse_iso(s)),
+    ).to_stdlib(),
 }
 
 
@@ -102,6 +115,7 @@ libraries_parse_utc_from_rfc_3339 = {
     "udatetime": udatetime.from_string,
     "pydantic": TypeAdapter(pydantic.AwareDatetime).validate_python,
     "pandas": lambda dt: pd.Timestamp(dt).to_pydatetime(),
+    "whenever": OffsetDateTime.parse_iso,
 }
 
 
