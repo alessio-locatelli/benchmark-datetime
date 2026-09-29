@@ -1,0 +1,10 @@
+{
+  "private": true,
+  "devDependencies": {
+    "prettier": "3.9.9"
+  },
+  "scripts": {
+    "format": "prettier --write --cache --log-level warn .",
+    "format:check": "prettier --check --cache ."
+  }
+}
