@@ -126,3 +126,5 @@ dmypy.json
 cython_debug/
 
 .lycheecache
+
+node_modules/

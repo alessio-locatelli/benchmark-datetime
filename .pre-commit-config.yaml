@@ -79,3 +79,12 @@ repos:
             pandas-stubs,
             types-python-dateutil,
           ]
+
+  - repo: local
+    hooks:
+      - id: prettier
+        name: Prettier
+        entry: npm run format:check --
+        language: system
+        pass_filenames: false
+        types_or: [markdown, yaml, json]
